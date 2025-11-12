@@ -1,39 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-name: backend
-namespace: demo
+  name: backend
+  labels:
+    app: backend
 spec:
-replicas: 1
-selector:
-matchLabels:
-app: backend
-template:
-metadata:
-labels:
-app: backend
-spec:
-containers:
-- name: backend
-image: YOUR_REGISTRY/simple-backend:latest
-imagePullPolicy: IfNotPresent
-env:
-- name: PGHOST
-value: postgres
-- name: PGUSER
-valueFrom:
-secretKeyRef:
-name: pg-secret
-key: POSTGRES_USER
-- name: PGPASSWORD
-valueFrom:
-secretKeyRef:
-name: pg-secret
-key: POSTGRES_PASSWORD
-- name: PGDATABASE
-valueFrom:
-secretKeyRef:
-name: pg-secret
-key: POSTGRES_DB
-ports:
-- containerPort: 4000
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: battulanag/backend:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: DATABASE_URL
+              value: "postgres://user:password@postgres:5432/mydb"
